@@ -1,0 +1,3 @@
+/.pep/
+*.zip
+!tests/data/*.zip
