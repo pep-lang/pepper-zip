@@ -105,7 +105,7 @@ installed, checks that both read an archive `tests/interop.pep` writes.
 
 ## Decisions (from the open questions in #281)
 
-- **Its own repository**, like pepper-yaml, pepper-toml and pepper-llvm,
+- **Its own repository**, like pepper-yaml and pepper-llvm,
   fetched by the package manager; `.tar.gz` stays in the runtime because
   the package manager needs it to fetch packages (Justin, 2026-10-02).
 - **Encrypted entries are unsupported**: ZipCrypto and AES entries are
