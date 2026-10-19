@@ -31,6 +31,7 @@ jobs:
       - name: Install Pepper (Unix)
         if: runner.os != 'Windows'
         run: |
+          set -euo pipefail
           curl -fsSL https://raw.githubusercontent.com/pep-lang/pepper/main/scripts/install.sh | sh
           echo "$HOME/.pepper/bin" >> "$GITHUB_PATH"
 
