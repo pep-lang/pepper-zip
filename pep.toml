@@ -1,6 +1,6 @@
 [package]
 name = "zip"
-version = "0.1.0"
+version = "1.0.0"
 description = "Zip archives: list, read, extract safely, and write, with DEFLATE and ZIP64"
 license = "Apache-2.0"
 repository = "https://github.com/pep-lang/pepper-zip"
