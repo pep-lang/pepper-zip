@@ -1,8 +1,8 @@
 # pepper-zip
 
-Zip archives for [Pepper](https://github.com/justinboswell/pepper) (issue
-justinboswell/pepper#281): list the entries of a `.zip` file, read them,
-extract them safely, and write new archives.
+Zip archives for [Pepper](https://github.com/justinboswell/pepper): list
+the entries of a `.zip` file, read them, extract them safely, and write new
+archives.
 
 One module, **`zip`**:
 
@@ -103,15 +103,14 @@ and the unzip example, then, when Python and Info-ZIP's `unzip` are
 installed, checks that both read an archive `tests/interop.pep` writes.
 `tests/make_fixtures.py` remakes `tests/data`.
 
-## Decisions (from the open questions in #281)
+## Design
 
 - **Its own repository**, like pepper-yaml and pepper-llvm,
   fetched by the package manager; `.tar.gz` stays in the runtime because
-  the package manager needs it to fetch packages (Justin, 2026-10-02).
+  the package manager needs it to fetch packages.
 - **Encrypted entries are unsupported**: ZipCrypto and AES entries are
   listed with `is_encrypted`, and reading one is an error naming the
-  entry and the kind. Support can come later without changing the API
-  (Justin, 2026-10-02).
+  entry and the kind. Support can come later without changing the API.
 - **Writing goes to any `io.Writer`**, with no seeking: entries from
   memory carry their sizes in the local header, and streamed entries in a
   data descriptor. A dedicated non-seekable streaming mode was deferred;
@@ -119,3 +118,7 @@ installed, checks that both read an archive `tests/interop.pep` writes.
 - **The writer's name check** rejects empty and duplicate names; it does
   not rewrite names, so a writer can still make an archive with `..` in
   it, and readers (this one included) refuse to extract it.
+
+## License
+
+Apache-2.0; see [LICENSE](LICENSE).
