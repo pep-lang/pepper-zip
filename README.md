@@ -1,6 +1,6 @@
 # pepper-zip
 
-Zip archives for [Pepper](https://github.com/justinboswell/pepper): list
+Zip archives for [Pepper](https://github.com/pep-lang/pepper): list
 the entries of a `.zip` file, read them, extract them safely, and write new
 archives.
 
@@ -78,14 +78,14 @@ This repository is a package: `pep.toml` marks its root, and its root
 `module.pep` is the `zip` module. Add it to a project under the name `zip`:
 
 ```sh
-pepper package add justinboswell/pepper-zip --name zip
+pepper package add pep-lang/pepper-zip --name zip
 ```
 
 which writes
 
 ```toml
 [dependencies]
-zip = { github = "justinboswell/pepper-zip" }
+zip = { github = "pep-lang/pepper-zip" }
 ```
 
 Without a project, put a folder named `zip` that holds (or links to) this
