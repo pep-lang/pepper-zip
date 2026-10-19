@@ -1,0 +1,69 @@
+# Tests the package on each push to main and each pull request, and on a
+# vX.Y.Z tag also publishes a GitHub release for that tag. Runs on
+# GitHub-hosted runners with the newest published Pepper toolchain,
+# installed with pep-lang/pepper's install scripts as a user installs it.
+#
+# Release: set `version` in pep.toml, merge, then
+#   git tag v1.0.0 && git push origin v1.0.0
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025, macos-15]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install Pepper (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/pep-lang/pepper/main/scripts/install.sh | sh
+          echo "$HOME/.pepper/bin" >> "$GITHUB_PATH"
+
+      - name: Install Pepper (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          irm https://raw.githubusercontent.com/pep-lang/pepper/main/scripts/install.ps1 | iex
+          "$env:LOCALAPPDATA\pepper\bin" | Out-File -Append -Encoding utf8 $env:GITHUB_PATH
+
+      - name: Test
+        shell: bash
+        run: bash tests/run.sh
+
+  release:
+    needs: test
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+
+      # The tag must match pep.toml's version, so a release never names a
+      # version its manifest doesn't.
+      - name: Check the version
+        run: |
+          set -euo pipefail
+          want="$(sed -nE 's/^version *= *"([^"]+)".*/\1/p' pep.toml | head -1)"
+          [ "v$want" = "$GITHUB_REF_NAME" ] || { echo "::error::tag $GITHUB_REF_NAME but pep.toml says $want"; exit 1; }
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --generate-notes --verify-tag
