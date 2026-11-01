@@ -23,6 +23,11 @@ ln -s "$root" packages/zip
 ./unzip_example "$root/tests/data/zip64.zip" extracted
 test -f extracted/forced.txt
 
+# The Pepper book's example, which writes bundle.zip and extracts it to out/.
+"$pepper" build -I packages "$root/examples/book/main.pep" -o book_example
+./book_example | grep -qx "version.txt: 5 bytes"
+test -f out/version.txt
+
 if command -v python3 > /dev/null && command -v unzip > /dev/null; then
     "$pepper" build -I packages "$root/tests/interop.pep" -o interop
     ./interop interop.zip
